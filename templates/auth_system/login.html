@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h5>Don't have an account <a href='register' >register</a><h5>
+<div class="container d-flex justify-content-center align-items-center">
+    
+
+    <form method="POST" >
+        {% csrf_token %}
+
+
+        {% for f in form %}
+        <div class="mb-3">
+            <label for="disabledTextInput" class="form-label">{{f.label}}</label>
+            <div class="form-control">{{f}}</div>
+            <label for="disabledTextInput" class="form-label">{{ f.errors }}</label>
+          </div>
+        <br>
+        {% endfor %}
+        <br>
+        <input class="btn btn-primary" type="submit">
+        
+    </from>
+
+</div>
+
+{% endblock %}

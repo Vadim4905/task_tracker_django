@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>My tasks:</h1>
+{% for task in user.tasks.all %}
+
+<a href='{% url "tasks:task-detail" task.pk %}'><h3>{{task}}</h3></a> 
+{% endfor %}
+
+{%endblock%}
