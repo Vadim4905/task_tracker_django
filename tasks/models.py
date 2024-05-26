@@ -18,9 +18,12 @@ class Task(models.Model):
     description = models.TextField()
     status = models.CharField(max_length=31, choices=STATUS_CHOICES,default='todo')
     priority = models.CharField(max_length=31, choices=PRIORITY_CHOICES,default='medium')
-    dude_date = models.DateTimeField(null=True,blank=True)
+    due_date = models.DateTimeField(null=True,blank=True)
     creator = models.ForeignKey(get_user_model(),on_delete=models.CASCADE,related_name='tasks')
     is_publick = models.BooleanField(default=True)
+    
+    def is_missing(self):
+        pass
     
     def __str__(self):
         return self.title

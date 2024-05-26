@@ -1,9 +1,16 @@
 from django import forms
+from django.contrib.admin.widgets import   AdminDateWidget, AdminTimeWidget,AdminSplitDateTime
 
 from . import models
 
 
 class TaskForm(forms.ModelForm):
+    due_date = forms.SplitDateTimeField(
+        widget=AdminSplitDateTime,
+        required=False,
+        label = 'due date'
+    )
+    
     class Meta:
         model = models.Task
         fields = (
@@ -11,13 +18,18 @@ class TaskForm(forms.ModelForm):
             'description',
             'status',
             'priority',
-            'dude_date',
+            'due_date',
             'is_publick'
         )
+        widgets ={
+            "due_date" :AdminDateWidget,
+        }
+
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         for field in self.fields:
-            self.fields[field].widget.attrs.update({"class": "form-control"})
+            pass
+            # self.fields[field].widget.attrs.update({"class": "form-control"})
         
 class TaskFilterForm(forms.Form):
     STATUS_CHOICES=[
@@ -36,8 +48,16 @@ class TaskFilterForm(forms.Form):
         
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=False, label='status')
     priority = forms.ChoiceField(choices=PRIORITY_CHOICES, required=False, label='priority')
-    since = forms.DateTimeField(required=False, label='since')
-    to = forms.DateTimeField(required=False, label='to')
+    since = forms.SplitDateTimeField(
+        widget=AdminSplitDateTime,
+        required=False,
+        label = 'since deadline'
+    )
+    to = forms.SplitDateTimeField(
+        widget=AdminSplitDateTime,
+        required=False,
+        label = 'to dealine'
+    )
 
 class CommentForm(forms.ModelForm):
     class Meta:

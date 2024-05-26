@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied ,ViewDoesNotExist
+from django.utils import timezone
 
 from . import mixins
 from . import models
@@ -25,10 +26,16 @@ class TaskListView(ListView):
             
         status = self.request.GET.get('status','')
         priority = self.request.GET.get('priority','')
+        since = self.request.GET.get('since','')
+        to = self.request.GET.get('to','')
         if status:
             queryset = queryset.filter(status=status)
         if priority:
             queryset = queryset.filter(priority=priority)
+        if since:
+            queryset = queryset.filter(due_date__gte=since)
+        if to:
+            queryset = queryset.filter(due_date__lte=to)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -36,7 +43,30 @@ class TaskListView(ListView):
         context['filter_form'] = forms.TaskFilterForm(self.request.GET)
         context['task_form'] = forms.TaskForm(self.request.GET)
         return context
+    
+
         
+class TaskFilterView(TaskListView):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        now = timezone.now()
+        if self.kwargs.get('category') == 'no-due-date':
+            queryset = queryset.filter(due_date=None)
+        if self.kwargs.get('category') == 'missing':
+            queryset = queryset.filter(due_date__lte=now)
+        if self.kwargs.get('category') == 'assigned':
+            queryset = queryset.filter(due_date__gte=now)
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.kwargs.get('category') == 'no-due-date':
+            context['no-due-date'] = 'active'
+        if self.kwargs.get('category') == 'missing':
+            context['missing'] = 'active'
+        if self.kwargs.get('category') == 'assigned':
+            context['assigned'] = 'active'
+        return context
     
     
 class TaskDetailView(LoginRequiredMixin,DetailView):

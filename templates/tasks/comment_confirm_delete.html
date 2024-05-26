@@ -5,12 +5,12 @@
 <div class='container'>
 
     <h2>Delete task</h2>
-    <p> Are you sure you want to delete task {{object.title}} </p>
+    <p> Are you sure you want to delete comment {{object.title}} </p>
 
     <form method='post'>
         {% csrf_token %}
         <button type='submit' class='btn btn-danger'>Yes, delete </button>
-        <a href='{% url "tasks:task-list" %}' > Go back to task list </a >
+        <a href='{% url "tasks:task-detail" object.task.pk %}' >No, go back to task  </a >
     </form>
 
 </div>
