@@ -2,6 +2,19 @@
 
 {% block content %}
 
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link {{assigned}}" aria-current="page" href="{% url 'tasks:task-filter' 'assigned' %}">Assigned</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link  {{missing}}" href="{% url 'tasks:task-filter' 'missing' %}">Missing</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link  {{no_due_date}}" href="{% url 'tasks:task-filter' 'no-due-date' %}">no due date</a>
+    </li>
+  </ul>
+
 <div class="container mt-3">
     
     <h2>Task list</h2>
@@ -16,6 +29,7 @@
 <br>
     
     <form method="get" class="form-inline mb-3">
+        {{filter_form.media}}
         {{filter_form.as_p}}
         {% comment %} {{ form.status.label_tag }}
         {{ form.status }}  {% endcomment %}
